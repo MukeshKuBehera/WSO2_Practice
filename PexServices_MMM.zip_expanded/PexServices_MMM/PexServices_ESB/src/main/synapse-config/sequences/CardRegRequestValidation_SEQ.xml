@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="CardRegRequestValidation_SEQ" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <log level="custom">
+        <property name="!!!! Inside CardRegRequestValidation_SEQ !!!!!!" value="!!!! Inside CardRegRequestValidation_SEQ !!!!!!"/>
+    </log>
+    <filter regex="false" source="boolean(get-property('card_type')='' or get-property('fname')=''   or get-property('title')='' or get-property('lname')=''   or get-property('dob')='' or get-property('gender')='' or get-property('IDNumber')=''    or get-property('nationality')=''  or get-property('add1')=''  or get-property('country')=''    or get-property('postal')=''  or get-property('mob')='' or get-property('email')=''  or get-property('source_of_funds')=''    )">
+        <then/>
+        <else>
+            <log level="custom">
+                <property name="!!!!! username is null !!!!!" value="!!!!! username is null !!!!!"/>
+            </log>
+            <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+            <property name="RSInfoError" scope="default" type="STRING" value="Mandatory fields must not be blank"/>
+            <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+            <sequence key="Generic_Fault_SEQ"/>
+        </else>
+    </filter>
+    <filter regex="false" source="boolean(get-property('card_type')='null' or get-property('fname')='null'   or get-property('title')='null' or get-property('lname')='null'   or get-property('dob')='null' or get-property('gender')='null' or get-property('IDNumber')='null'    or get-property('nationality')='null'  or get-property('add1')='null'  or get-property('country')='null'    or get-property('postal')='null'  or get-property('mob')='null' or get-property('email')='null'  or get-property('source_of_funds')='null'    )">
+        <then/>
+        <else>
+            <log level="custom">
+                <property name="!!!!! username is null !!!!!" value="!!!!! username is null !!!!!"/>
+            </log>
+            <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+            <property name="RSInfoError" scope="default" type="STRING" value="Mandatory fields must not be blank"/>
+            <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+            <sequence key="Generic_Fault_SEQ"/>
+        </else>
+    </filter>
+    <filter regex="true" source="fn:string-length(get-property('CardNumber')) = 16">
+        <then/>
+        <else>
+            <log level="custom">
+                <property name="!!!! Invalid Card Number !!!!!" value="!!!!! Invalid Card Number !!!!!"/>
+            </log>
+            <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+            <property name="RSInfoError" scope="default" type="STRING" value="Invalid Card Number"/>
+            <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+            <sequence key="Generic_Fault_SEQ"/>
+        </else>
+    </filter>
+</sequence>

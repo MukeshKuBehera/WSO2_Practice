@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><artifacts>
+    <artifact name="HospitalService_API" groupId="com.hospital.api" version="1.0.0" type="synapse/api" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/api/HospitalService_API.xml</file>
+    </artifact>
+    <artifact name="HospitalService_API_swagger" groupId="com.hospital.metadata" version="1.0.0" type="synapse/metadata" serverRole="EnterpriseServiceBus">
+        <file>src/main/resources/metadata/HospitalService_API_swagger.yaml</file>
+    </artifact>
+    <artifact name="HospitalService_API_metadata" groupId="com.hospital.metadata" version="1.0.0" type="synapse/metadata" serverRole="EnterpriseServiceBus">
+        <file>src/main/resources/metadata/HospitalService_API_metadata.yaml</file>
+    </artifact>
+    <artifact name="ChannelingFeeEP" groupId="com.hospital.endpoint" version="1.0.0" type="synapse/endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/endpoints/ChannelingFeeEP.xml</file>
+    </artifact>
+    <artifact name="ClemencyMedicalEP" groupId="com.hospital.endpoint" version="1.0.0" type="synapse/endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/endpoints/ClemencyMedicalEP.xml</file>
+    </artifact>
+    <artifact name="GrandOakEP" groupId="com.hospital.endpoint" version="1.0.0" type="synapse/endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/endpoints/GrandOakEP.xml</file>
+    </artifact>
+    <artifact name="PinValleyCommunity" groupId="com.hospital.endpoint" version="1.0.0" type="synapse/endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/endpoints/PinValleyCommunity.xml</file>
+    </artifact>
+    <artifact name="SettlePaymentEP" groupId="com.hospital.endpoint" version="1.0.0" type="synapse/endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/endpoints/SettlePaymentEP.xml</file>
+    </artifact>
+    <artifact name="PaymentRequestMessageStore" groupId="com.hospital.message-store" version="1.0.0" type="synapse/message-store" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/message-stores/PaymentRequestMessageStore.xml</file>
+    </artifact>
+    <artifact name="PaymentRequestProcessingSequence" groupId="com.hospital.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/PaymentRequestProcessingSequence.xml</file>
+    </artifact>
+    <artifact name="PaymentRequestProcessor" groupId="com.hospital.message-processors" version="1.0.0" type="synapse/message-processors" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/message-processors/PaymentRequestProcessor.xml</file>
+    </artifact>
+    <artifact name="PaymentRequestMessageStores" groupId="com.hospital.message-store" version="1.0.0" type="synapse/message-store" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/message-stores/PaymentRequestMessageStores.xml</file>
+    </artifact>
+</artifacts>

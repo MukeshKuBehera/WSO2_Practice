@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><artifacts>
+    <artifact name="PexServices_DSS" groupId="com.eidiko.dataservice" version="1.0.0" type="service/dataservice" serverRole="DataServicesServer">
+        <file>dataservice/PexServices_DSS.dbs</file>
+    </artifact>
+</artifacts>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;UserDetrails_ESB/src/main/synapse-config/sequences/User_SEQ.xml&apos;" deleteContents="false" description="Delete resource &apos;UserDetrails_ESB/src/main/synapse-config/sequences/User_SEQ.xml&apos;" element1="/UserDetrails_ESB/src/main/synapse-config/sequences/User_SEQ.xml" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1667207980209"/>
+</session>

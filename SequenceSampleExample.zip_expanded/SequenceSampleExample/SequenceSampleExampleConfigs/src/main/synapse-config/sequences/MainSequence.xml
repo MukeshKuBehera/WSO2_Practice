@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="MainSequence" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <call>
+        <endpoint>
+            <http method="get" uri-template="https://mocki.io/v1/a3564ad2-c941-476b-81be-d48ee35d5c8a">
+                <suspendOnFailure>
+                    <initialDuration>-1</initialDuration>
+                    <progressionFactor>-1</progressionFactor>
+                    <maximumDuration>0</maximumDuration>
+                </suspendOnFailure>
+                <markForSuspension>
+                    <retriesBeforeSuspension>0</retriesBeforeSuspension>
+                </markForSuspension>
+            </http>
+        </endpoint>
+    </call>
+    <payloadFactory media-type="json">
+        <format>$1</format>
+        <args>
+            <arg evaluator="json" expression="$"/>
+        </args>
+    </payloadFactory>
+    <log level="full" separator="################"/>
+    <script language="js"><![CDATA[var emp = mc.getPayloadJSON();
+				var log = mc.getServiceLog();
+				var keys = Object.keys(emp);
+				emp = emp[keys[0]];
+				var response = {emp: []};
+				for(var i =0; i < emp.length; i++) {
+				var item = emp[i];
+			 if(item.salary>=10000){
+        		    var tax=0.25;
+          		  var taxamount=item.salary*tax;
+        		   var taxdeducted=item.salary-taxamount;
+         		  }	
+         		  response.emp.push({id:item.id,name:item.name,desg:item.desg,taxamount:taxamount,taxdeducted:taxdeducted});
+         		  }
+				mc.setPayloadJSON(response);]]></script>
+    <log level="full"/>
+    <property name="messageType" scope="axis2" type="STRING" value="application/json"/>
+</sequence>

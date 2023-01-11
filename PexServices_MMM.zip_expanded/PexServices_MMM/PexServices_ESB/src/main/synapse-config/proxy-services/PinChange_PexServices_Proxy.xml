@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy name="PinChange_PexServices_Proxy" startOnLoad="true" transports="http https" xmlns="http://ws.apache.org/ns/synapse">
+    <target>
+        <inSequence>
+            <log level="custom">
+                <property name="!!!! Inside PinChange_PexServices_Proxy !!!!!!" value="!!!! Inside PinChange_PexServices_Proxy !!!!!!"/>
+            </log>
+            <propertyGroup>
+                <property expression="//username//text()" name="username" scope="default" type="STRING"/>
+                <property expression="//password//text()" name="password" scope="default" type="STRING"/>
+                <property expression="//CardNumber//text()" name="CardNumber" scope="default" type="STRING"/>
+                <property expression="//NewPin//text()" name="PIN" scope="default" type="STRING"/>
+                <property expression="//OldPin//text()" name="OldPin" scope="default" type="STRING"/>
+            </propertyGroup>
+            <log>
+                <property expression="$ctx:username" name="username"/>
+                <property expression="$ctx:password" name="password"/>
+                <property expression="$ctx:Card_No" name="Card_No"/>
+                <property expression="$ctx:PIN" name="PIN"/>
+                <property expression="$ctx:OldPin" name="OldPin"/>
+            </log>
+            <sequence key="LoginValidation_PexServices_SEQ"/>
+            <sequence key="ValidateCardNumber_PexServices_SEQ"/>
+            <filter regex="true" source="boolean(fn:string-length(get-property('PIN')) &lt; 9 or fn:string-length(get-property('OldPin')) &lt; 9)">
+                <then/>
+                <else>
+                    <log level="custom">
+                        <property name="!!!! PIN length should be less then 8 !!!!!" value="!!!! PIN length should be less then 8 !!!!!"/>
+                    </log>
+                    <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+                    <property name="RSInfoError" scope="default" type="STRING" value="PIN length is too long"/>
+                    <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+                    <sequence key="Generic_Fault_SEQ"/>
+                </else>
+            </filter>
+            <payloadFactory media-type="json">
+                <format>
+					{
+					"_putupdatePinChange":{
+						"Card_No": "$1",
+				        "PIN": "$2"
+					}
+					}
+				</format>
+                <args>
+                    <arg evaluator="xml" expression="get-property('CardNumber')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('PIN')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                </args>
+            </payloadFactory>
+            <property name="uri.var.DSSResourceType" scope="default" type="STRING" value="PinChange"/>
+            <log level="custom">
+                <property expression="json-eval($)" name="!!!! Before calling DataServicesConnection_PexServices_EP !!!!!!"/>
+                <property expression="get-property('uri.var.DSSResourceType')" name="DSSResourceType"/>
+            </log>
+            <call>
+                <endpoint key="conf:/Repository/Eidiko/PexServices/Endpoints/DataServicesConnection_PexServices_EP.xml"/>
+            </call>
+            <log level="custom">
+                <property name="!!!! After calling DataServicesConnection_PexServices_EP !!!!!!" value="!!!! After calling DataServicesConnection_PexServices_EP !!!!!!"/>
+                <property expression="get-property('uri.var.DSSResourceType')" name="DSSResourceType"/>
+            </log>
+            <payloadFactory description="Generate XML payload." media-type="xml">
+                <format>
+                    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+                        <soapenv:Body>
+                            <ns:PinChangeResponse xmlns:ns="http://ProxyPractice.services.core.carbon.wso2.org">
+                                <ns:RSType>$1</ns:RSType>
+                                <ns:RSInfo>PIN Changed successfully</ns:RSInfo>
+                            </ns:PinChangeResponse>
+                        </soapenv:Body>
+                    </soapenv:Envelope>
+                </format>
+                <args>
+                    <arg value="SUCCESS"/>
+                </args>
+            </payloadFactory>
+            <property name="HTTP_SC" scope="axis2" type="STRING" value="200"/>
+            <property name="messageType" scope="axis2" type="STRING" value="application/soap+xml"/>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </target>
+</proxy>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy name="GetCardStockBv_PexServices_Proxy" startOnLoad="true" transports="http https" xmlns="http://ws.apache.org/ns/synapse">
+    <target>
+        <inSequence>
+            <log level="custom">
+                <property name="!!!! Inside GetCardStockBv_PexServices_Proxy!!!!!!" value="!!!! Inside GetCardStockBv_PexServices_Proxy !!!!!!"/>
+            </log>
+            <propertyGroup>
+                <property expression="//username/text()" name="username" scope="default" type="STRING"/>
+                <property expression="//password/text()" name="password" scope="default" type="STRING"/>
+                <property expression="//Card_Type//text()" name="Card_Type" scope="default" type="STRING"/>
+            </propertyGroup>
+            <sequence key="LoginValidation_PexServices_SEQ"/>
+            <filter regex="true" source="fn:string-length(get-property('Card_Type')) &lt; 9">
+                <then/>
+                <else>
+                    <log level="custom">
+                        <property name="!!!! Card_Type length should be less then 8 !!!!!" value="!!!! Card_Type length should be less then 8 !!!!!"/>
+                    </log>
+                    <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+                    <property name="RSInfoError" scope="default" type="STRING" value="Card_Type length is too long"/>
+                    <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+                    <sequence key="Generic_Fault_SEQ"/>
+                </else>
+            </filter>
+            <payloadFactory media-type="json">
+                <format>{
+							"_getCardStockBV":{
+									"Card_Type":"$1",
+									"UserId":$2
+									}
+						}
+				</format>
+                <args>
+                    <arg evaluator="xml" expression="get-property('Card_Type')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('UserId')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                </args>
+            </payloadFactory>
+            <property name="uri.var.DSSResourceType" scope="default" type="STRING" value="GetCardDetails"/>
+            <log level="custom">
+                <property expression="json-eval($)" name="!!!! Before calling DataServicesConnection_PexServices_EP !!!!!!"/>
+                <property expression="get-property('uri.var.DSSResourceType')" name="DSSResourceType"/>
+            </log>
+            <call>
+                <endpoint key="conf:/Repository/Eidiko/PexServices/Endpoints/DataServicesConnection_PexServices_EP.xml"/>
+            </call>
+            <property expression="json-eval($.cards.card.cardNum)" name="CardNum" scope="default" type="STRING"/>
+            <property expression="json-eval($.cards.card.Expiry)" name="Expiry" scope="default" type="STRING"/>
+            <log level="custom">
+                <property expression="json-eval($)" name="!!!! After calling DataServicesConnection_PexServices_EP !!!!!!"/>
+                <property expression="get-property('uri.var.DSSResourceType')" name="DSSResourceType"/>
+                <property expression="$ctx:CardNum" name="CardNum"/>
+                <property expression="$ctx:Expiry" name="Expiry"/>
+            </log>
+            <filter regex="false" source="get-property('CardNum')=''">
+                <then>
+                    <payloadFactory description="Generate XML payload." media-type="xml">
+                        <format>
+                            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+                                <soapenv:Body>
+                                    <ns:GetCardStockBvResponse xmlns:ns="http://ProxyPractice.services.core.carbon.wso2.org">
+                                        <ns:RSType>$1</ns:RSType>
+                                        <ns:RSInfo>
+                                            <Cards>
+                                                <Card>
+                                                    <CardNum>$2</CardNum>
+                                                    <Expiry>$3</Expiry>
+                                                </Card>
+                                            </Cards>
+                                        </ns:RSInfo>
+                                    </ns:GetCardStockBvResponse>
+                                </soapenv:Body>
+                            </soapenv:Envelope>
+                        </format>
+                        <args>
+                            <arg value="SUCCESS"/>
+                            <arg evaluator="xml" expression="get-property('CardNum')" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"/>
+                            <arg evaluator="xml" expression="get-property('Expiry')" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"/>
+                        </args>
+                    </payloadFactory>
+                    <property name="HTTP_SC" scope="axis2" type="STRING" value="200"/>
+                </then>
+                <else>
+                    <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+                    <property name="RSInfoError" scope="default" type="STRING" value="Invalid card"/>
+                    <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+                    <sequence key="Generic_Fault_SEQ"/>
+                </else>
+            </filter>
+            <property name="messageType" scope="axis2" type="STRING" value="application/soap+xml"/>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </target>
+</proxy>

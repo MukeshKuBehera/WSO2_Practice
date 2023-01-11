@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/iterate" name="IterateAggregateAPI" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="POST" uri-template="/*">
+        <inSequence>
+            <sequence key="InSequence"/>
+        </inSequence>
+        <outSequence>
+            <sequence key="ScriptMediatorExample"/>
+        </outSequence>
+        <faultSequence/>
+    </resource>
+</api>

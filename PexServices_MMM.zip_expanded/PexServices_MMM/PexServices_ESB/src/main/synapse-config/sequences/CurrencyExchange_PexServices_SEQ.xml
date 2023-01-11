@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="CurrencyExchange_PexServices_SEQ" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <log level="custom">
+        <property name="!!!! Inside CurrencyExchange_PexServices_SEQ !!!!!!" value="!!!! Inside CurrencyExchange_PexServices_SEQ !!!!!!"/>
+    </log>
+    <property expression="fn:concat('conf:/Repository/Eidiko/PexServices/LocalEntry/', 'PexServices_LE', '.xml')" name="configFileName" scope="default" type="STRING"/>
+    <property expression="get-property('registry',$ctx:configFileName)" name="localEntry" scope="default" type="OM" xmlns:ns="http://org.apache.synapse/xsd"/>
+    <property expression="$ctx:localEntry//*[local-name()=$ctx:Currency]/text()" name="CurrencyType" scope="default" type="STRING" xmlns:ns="http://org.apache.synapse/xsd"/>
+    <log level="custom">
+        <property expression="$ctx:CurrencyType" name="!!!!!!! CurrencyType !!!!!!" xmlns:ns="http://org.apache.synapse/xsd"/>
+    </log>
+    <filter regex="false" source="get-property('CurrencyType')=''">
+        <then>
+            <script language="js"><![CDATA[var Ammount = mc.getProperty("AccBalance");
+                                            var Currency = mc.getProperty("Currency");
+                                           var AmtInDouble = parseFloat(Ammount);
+                                           print(AmtInDouble);
+                      
+                       if(Currency =="EUR"){
+                       var rate= 1.03;
+                       var excAmmount = rate * AmtInDouble ;
+                       print(excAmmount);
+						mc.setProperty("excAmmount",excAmmount.toString());
+                       }
+                        if(Currency =="GBP"){
+                       var rate= 0.906;
+                       var excAmmount = rate * AmtInDouble ;
+                       print(excAmmount);
+						mc.setProperty("excAmmount",excAmmount.toString());
+                       }
+                        if(Currency =="CHF"){
+                       var rate= 0.997;
+                       var excAmmount = rate * AmtInDouble ;
+                       print(excAmmount);
+						mc.setProperty("excAmmount",excAmmount.toString());
+                       }
+                        if(Currency =="AED"){
+                       var rate= 3.67;
+                       var excAmmount = rate * AmtInDouble ;
+                       print(excAmmount);
+						mc.setProperty("excAmmount",excAmmount.toString());
+                       }
+                        if(Currency =="ZAR"){
+                       var rate= 18.13;
+                       var excAmmount = rate * AmtInDouble ;
+                       print(excAmmount);
+						mc.setProperty("excAmmount",excAmmount.toString());
+                       }
+                        if(Currency =="USD"){
+                       var rate= 1;
+                       var excAmmount = rate * AmtInDouble ;
+                       print(excAmmount);
+						mc.setProperty("excAmmount",excAmmount.toString());
+                       }]]></script>
+            <log level="custom">
+                <property expression="get-property('excAmmount')" name="excAmmount" xmlns:ns="http://org.apache.synapse/xsd"/>
+            </log>
+        </then>
+        <else>
+            <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+            <property name="RSInfoError" scope="default" type="STRING" value="Dear customer, You entered invalid currency. Please try again with valid currency"/>
+            <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+            <sequence key="Generic_Fault_SEQ"/>
+        </else>
+    </filter>
+    <!--  <log level="custom">
+                <property expression="json-eval($)" name="!!!! Before calling CurrencyExchange_PexServices_EP. !!!!!!"/>
+      </log>
+               <call>
+                <endpoint key="conf:/Repository/Eidiko/PexServices/Endpoints/CurrencyExchange_PexServices_EP.xml"/>
+            </call>
+<property expression="json-eval($.rates.{$ctx.Currency})" name="rate" scope="default" type="STRING"/>
+
+                        <log level="custom">
+                <property expression="json-eval($)" name="!!!! After calling CurrencyExchange_PexServices_EP !!!!!!"/>
+                <property name="rate" expression="$ctx:rate"></property>
+             
+            </log> -->
+</sequence>

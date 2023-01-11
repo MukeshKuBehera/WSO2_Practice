@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy name="CSVSmooks" startOnLoad="true" transports="https http vfs" xmlns="http://ws.apache.org/ns/synapse">
+    <target>
+        <inSequence>
+            <smooks config-key="smooks-csv">
+                <input type="text"/>
+                <output type="xml"/>
+            </smooks>
+            <log level="full"/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </target>
+    <parameter name="transport.PollInterval">5</parameter>
+    <parameter name="transport.vfs.FileURI">file:///home/lakmali/dev/test/smooks/in</parameter>
+    <parameter name="transport.vfs.ContentType">text/plain</parameter>
+    <parameter name="transport.vfs.ActionAfterProcess">MOVE</parameter>
+    <parameter name="transport.vfs.MoveAfterFailure">file:///home/lakmali/dev/test/smooks/original</parameter>
+    <parameter name="transport.vfs.ActionAfterFailure">MOVE</parameter>
+    <parameter name="transport.vfs.FileNamePattern">.*.csv</parameter>
+    <parameter name="transport.vfs.MoveAfterProcess">file:///home/lakmali/dev/test/smooks/original</parameter>
+</proxy>

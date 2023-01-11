@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><artifacts>
+    <artifact name="SalesOrderQueueEP" groupId="wso2.sampleRabbitMQSampleTemplate.endpoint" version="1.0.0" type="synapse/endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/endpoints/SalesOrderQueueEP.xml</file>
+    </artifact>
+    <artifact name="SalesOrderQueueInboundEP" groupId="wso2.sampleRabbitMQSampleTemplate.inbound-endpoint" version="1.0.0" type="synapse/inbound-endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/inbound-endpoints/SalesOrderQueueInboundEP.xml</file>
+    </artifact>
+    <artifact name="SalesOrderAddService" groupId="wso2.sampleRabbitMQSampleTemplate.proxy-service" version="1.0.0" type="synapse/proxy-service" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/proxy-services/SalesOrderAddService.xml</file>
+    </artifact>
+    <artifact name="SalesOrderQueueErrorSeq" groupId="wso2.sampleRabbitMQSampleTemplate.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/SalesOrderQueueErrorSeq.xml</file>
+    </artifact>
+    <artifact name="SalesOrderQueueProcessSeq" groupId="wso2.sampleRabbitMQSampleTemplate.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/SalesOrderQueueProcessSeq.xml</file>
+    </artifact>
+</artifacts>

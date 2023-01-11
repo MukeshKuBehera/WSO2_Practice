@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localEntry key="PexServices_LE" xmlns="http://ws.apache.org/ns/synapse">
+    <PexServices>
+        <staticvalues>
+            <currency>
+                <USD>USD</USD>
+                <EUR>EUR</EUR>
+                <GBP>GBP</GBP>
+                <CHP>CHP</CHP>
+                <AED>AED</AED>
+                <ZAR>ZAR</ZAR>
+            </currency>
+        </staticvalues>
+    </PexServices>
+</localEntry>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="CustomerDetails_SEQ" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <call>
+        <endpoint key="CustomerDetails_EP"/>
+    </call>
+    <log level="custom">
+        <property expression="json-eval($)" name="Fetching_UserDetails"/>
+    </log>
+</sequence>

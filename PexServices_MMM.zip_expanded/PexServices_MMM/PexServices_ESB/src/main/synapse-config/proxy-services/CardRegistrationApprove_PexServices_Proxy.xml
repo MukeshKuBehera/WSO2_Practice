@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy name="CardRegistrationApprove_PexServices_Proxy" startOnLoad="true" transports="http https" xmlns="http://ws.apache.org/ns/synapse">
+    <target>
+        <inSequence>
+            <log level="custom">
+                <property name="!!!! Inside CardRegistrationApprove_PexServices_Proxy !!!!!!" value="!!!! Inside CardRegistrationApprove_PexServices_Proxy !!!!!!"/>
+            </log>
+            <propertyGroup>
+                <property expression="//username/text()" name="username" scope="default" type="STRING"/>
+                <property expression="//password/text()" name="password" scope="default" type="STRING"/>
+                <property expression="//CardNumber//text()" name="CardNumber" scope="default" type="STRING"/>
+                <property expression="//Notes//text()" name="Notes" scope="default" type="STRING"/>
+                <property expression="get-property(&quot;SYSTEM_DATE&quot;, &quot;yyyy-MM-dd HH:mm:ss&quot;)" name="CurrTimestamp" scope="default" type="STRING"/>
+                <property expression="get-property(&quot;SYSTEM_DATE&quot;, &quot;MM&quot;)" name="month" scope="default" type="STRING"/>
+                <property expression="get-property(&quot;SYSTEM_DATE&quot;, &quot;YY&quot;)" name="year" scope="default" type="STRING"/>
+            </propertyGroup>
+            <log level="custom">
+                <property expression="//username/text()" name="username"/>
+                <property expression="//password/text()" name="password"/>
+                <property expression="//CardNumber//text()" name="CardNumber"/>
+                <property expression="//Notes//text()" name="Notes"/>
+                <property expression="get-property(&quot;SYSTEM_DATE&quot;, &quot;yyyy-MM-dd HH:mm:ss&quot;)" name="CurrTimestamp"/>
+                <property expression="get-property(&quot;SYSTEM_DATE&quot;, &quot;MM&quot;)" name="month"/>
+                <property expression="get-property(&quot;SYSTEM_DATE&quot;, &quot;YY&quot;)" name="year"/>
+            </log>
+            <sequence key="LoginValidation_PexServices_SEQ"/>
+            <sequence key="ValidateCardNumber_PexServices_SEQ"/>
+            <filter regex="false" source="fn:string-length(get-property('Notes')) &lt; 9">
+                <then/>
+                <else>
+                    <log level="custom">
+                        <property name="!!!! Notes length should be less then 8 !!!!!" value="!!!! Notes length should be less then 8 !!!!!"/>
+                    </log>
+                    <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+                    <property name="RSInfoError" scope="default" type="STRING" value="Notes length is too long"/>
+                    <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+                    <sequence key="Generic_Fault_SEQ"/>
+                </else>
+            </filter>
+            <script language="js"><![CDATA[var month = mc.getProperty("month");
+            var year = mc.getProperty("year");
+            var yearInt= parseInt(year);
+            print(yearInt);
+            var expYear = yearInt + 4;
+             print(expYear);
+            var extdate = month+"/"+expYear ;
+             print(extdate);
+            mc.setProperty("extdate",extdate.toString());
+            
+            var randomnumber1=Math.floor((Math.random() * 10000) + 1);  
+             var randomnumber2=Math.floor((Math.random() * 1000) + 1);    
+      mc.setProperty("PIN", randomnumber1.toString().slice(0,4)); 
+            mc.setProperty("CVV", randomnumber2.toString().slice(0,4));]]></script>
+            <log level="custom">
+                <property expression="get-property('extdate')" name="extdate"/>
+                <property expression="get-property('PIN')" name="PIN"/>
+                <property expression="get-property('CVV')" name="CVV"/>
+            </log>
+            <payloadFactory media-type="json">
+                <format>{
+							"_postUpdCardForApprvl":{
+									"CardNumber":"$1",
+									"PIN" :"$2",
+								     "CardExpiry":"$3",
+									"CardCvvNo" :"$4",
+									"Notes" :"$5",
+									"CardApprvdDate":"$6"
+								
+									}
+						}
+				</format>
+                <args>
+                    <arg evaluator="xml" expression="get-property('CardNumber')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('PIN')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('extdate')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('CVV')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('Notes')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('CurrTimestamp')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                </args>
+            </payloadFactory>
+            <property name="uri.var.DSSResourceType" scope="default" type="STRING" value="UpdCardForApprvl"/>
+            <log level="custom">
+                <property expression="json-eval($)" name="!!!! Before calling DataServicesConnection_PexServices_EP !!!!!!"/>
+                <property expression="get-property('uri.var.DSSResourceType')" name="DSSResourceType"/>
+            </log>
+            <call>
+                <endpoint key="conf:/Repository/Eidiko/PexServices/Endpoints/DataServicesConnection_PexServices_EP.xml"/>
+            </call>
+            <log level="custom">
+                <property expression="json-eval($)" name="!!!! After calling DataServicesConnection_PexServices_EP !!!!!!"/>
+                <property expression="get-property('CardId')" name="CardId"/>
+            </log>
+            <payloadFactory description="Generate XML payload." media-type="xml">
+                <format>
+                    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+                        <soapenv:Body>
+                            <ns:CardRegistrationApproveRes xmlns:ns="http://ProxyPractice.services.core.carbon.wso2.org">
+                                <ns:RSType>$1</ns:RSType>
+                                <ns:RSInfo>Card $2 registration is approved</ns:RSInfo>
+                            </ns:CardRegistrationApproveRes>
+                        </soapenv:Body>
+                    </soapenv:Envelope>
+                </format>
+                <args>
+                    <arg value="SUCCESS"/>
+                    <arg evaluator="xml" expression="get-property('CardNumber')" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"/>
+                </args>
+            </payloadFactory>
+            <property name="messageType" scope="axis2" type="STRING" value="application/soap+xml"/>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </target>
+</proxy>

@@ -1,0 +1,10 @@
+---
+key: "UserDetails_API-1.0.0"
+name : "UserDetails_API"
+displayName : "UserDetails_API"
+description: "Sample API"
+version: "1.0.0"
+serviceUrl: "https://{MI_HOST}:{MI_PORT}/user"
+definitionType: "OAS3"
+securityType: "BASIC"
+mutualSSLEnabled: false

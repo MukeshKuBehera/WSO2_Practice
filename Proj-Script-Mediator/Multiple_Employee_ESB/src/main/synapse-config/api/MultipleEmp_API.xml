@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/test" name="dummy_api" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="POST">
+        <inSequence>
+            <log level="full">
+                <property expression="json-eval($)" name="InputObjects"/>
+            </log>
+            <propertyGroup>
+                <property expression="json-eval($.Employees)" name="ORIGINAL_PAYLOAD" scope="default" type="STRING"/>
+            </propertyGroup>
+            <log level="full">
+                <property expression="$ctx:ORIGINAL_PAYLOAD" name="!!!! ORIGINAL_PAYLOAD !!!!!"/>
+            </log>
+            <payloadFactory media-type="json">
+                <format>{"Employee":$1}</format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ORIGINAL_PAYLOAD"/>
+                </args>
+            </payloadFactory>
+            <foreach expression="json-eval($.Employee)" id="onebyone">
+                <sequence>
+                    <log level="custom">
+                        <property expression="json-eval($)" name="Itterating Employee"/>
+                    </log>
+                    <log level="custom">
+                        <property expression="//id" name="Employee_Id"/>
+                        <property expression="//name" name="Employee_Name"/>
+                        <property expression="//desg" name="Employee_Desg"/>
+                        <property expression="//salary" name="Employee_Salary"/>
+                    </log>
+                    <property expression="//salary" name="Sal" scope="default" type="STRING"/>
+                    <script language="js"><![CDATA[var amount=mc.getProperty("Sal");
+                   print("Script Amount :"+amount);
+                   var netsalary=parseFloat(amount);
+            print("netsalary:"+netsalary);
+            if(netsalary>=10000){
+            var tax=0.25;
+            var taxamount=netsalary*tax;
+           amount=netsalary - taxamount;
+           print("after tax paid:"+amount);
+           var taxdeducted=netsalary-amount;
+           print("tax amount :"+taxdeducted);
+           }
+            mc.setProperty("amount",amount.toString());
+            mc.setProperty("taxdeducted",taxdeducted.toString());]]></script>
+                    <property expression="get-property('amount')" name="Rest-salary" scope="default" type="STRING"/>
+                    <property expression="get-property('taxdeducted')" name="Tax-Amount" scope="default" type="STRING"/>
+                    <log level="custom">
+                        <property expression="get-property('amount')" name="Rest-salary"/>
+                    </log>
+                    <log level="custom">
+                        <property expression="get-property('taxdeducted')" name="Tax-Amount"/>
+                    </log>
+                    <payloadFactory media-type="json">
+                        <format>{
+                "id":"$1",
+                "name":"$2",
+                "desg":"$3",
+                "total-amount":"$4",
+                "tax-deducted":"$5",
+                "rest-amount":"$6"}</format>
+                        <args>
+                            <arg evaluator="xml" expression="//id"/>
+                            <arg evaluator="xml" expression="//name"/>
+                            <arg evaluator="xml" expression="//desg"/>
+                            <arg evaluator="xml" expression="//salary"/>
+                            <arg evaluator="xml" expression="$ctx:Tax-Amount"/>
+                            <arg evaluator="xml" expression="$ctx:Rest-salary"/>
+                        </args>
+                    </payloadFactory>
+                </sequence>
+            </foreach>
+            <aggregate id="onebyone">
+                <completeCondition>
+                    <messageCount max="-1" min="-1"/>
+                </completeCondition>
+                <onComplete aggregateElementType="root" expression="json-eval($)">
+                    <log level="full"/>
+                </onComplete>
+            </aggregate>
+            <log level="full">
+                <property expression="json-eval($)" name="Response_Payload"/>
+            </log>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </resource>
+</api>

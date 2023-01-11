@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><artifacts>
+    <artifact name="EmployeeAPI" groupId="com.employee.api" version="1.0.0" type="synapse/api" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/api/EmployeeAPI.xml</file>
+    </artifact>
+    <artifact name="EmployeeAPI_swagger" groupId="com.employee.metadata" version="1.0.0" type="synapse/metadata" serverRole="EnterpriseServiceBus">
+        <file>src/main/resources/metadata/EmployeeAPI_swagger.yaml</file>
+    </artifact>
+    <artifact name="EmployeeAPI_metadata" groupId="com.employee.metadata" version="1.0.0" type="synapse/metadata" serverRole="EnterpriseServiceBus">
+        <file>src/main/resources/metadata/EmployeeAPI_metadata.yaml</file>
+    </artifact>
+    <artifact name="EmployeeEndpoint" groupId="com.employee.endpoint" version="1.0.0" type="synapse/endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/endpoints/EmployeeEndpoint.xml</file>
+    </artifact>
+</artifacts>

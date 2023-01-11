@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><artifacts>
+    <artifact name="BalanceInquiry_PexServices_Proxy" groupId="com.eidiko.proxy-service" version="1.0.0" type="synapse/proxy-service" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/proxy-services/BalanceInquiry_PexServices_Proxy.xml</file>
+    </artifact>
+    <artifact name="LoginValidation_PexServices_SEQ" groupId="com.eidiko.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/LoginValidation_PexServices_SEQ.xml</file>
+    </artifact>
+    <artifact name="Generic_Fault_SEQ" groupId="com.eidiko.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/Generic_Fault_SEQ.xml</file>
+    </artifact>
+    <artifact name="CardRegistration_PexServices_Proxy" groupId="com.eidiko.proxy-service" version="1.0.0" type="synapse/proxy-service" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/proxy-services/CardRegistration_PexServices_Proxy.xml</file>
+    </artifact>
+    <artifact name="CardRegistrationApprove_PexServices_Proxy" groupId="com.eidiko.proxy-service" version="1.0.0" type="synapse/proxy-service" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/proxy-services/CardRegistrationApprove_PexServices_Proxy.xml</file>
+    </artifact>
+    <artifact name="CardStatus_PexServices_Proxy" groupId="com.eidiko.proxy-service" version="1.0.0" type="synapse/proxy-service" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/proxy-services/CardStatus_PexServices_Proxy.xml</file>
+    </artifact>
+    <artifact name="CurrencyExchange_PexServices_SEQ" groupId="com.eidiko.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/CurrencyExchange_PexServices_SEQ.xml</file>
+    </artifact>
+    <artifact name="ValidateCardNumber_PexServices_SEQ" groupId="com.eidiko.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/ValidateCardNumber_PexServices_SEQ.xml</file>
+    </artifact>
+    <artifact name="PinChange_PexServices_Proxy" groupId="com.eidiko.proxy-service" version="1.0.0" type="synapse/proxy-service" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/proxy-services/PinChange_PexServices_Proxy.xml</file>
+    </artifact>
+    <artifact name="GetCardStockBv_PexServices_Proxy" groupId="com.eidiko.proxy-service" version="1.0.0" type="synapse/proxy-service" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/proxy-services/GetCardStockBv_PexServices_Proxy.xml</file>
+    </artifact>
+    <artifact name="CardRegRequestValidation_SEQ" groupId="com.eidiko.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/CardRegRequestValidation_SEQ.xml</file>
+    </artifact>
+</artifacts>

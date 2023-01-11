@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="Generic_Fault_SEQ" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <log level="custom">
+        <property name="!!! Generic_Fault_SEQ !!!!" value="!!! Inside Generic_Fault_SEQ !!!"/>
+        <property expression="$ctx:RSTypeError" name="RSTypeError" xmlns:ns="http://org.apache.synapse/xsd"/>
+        <property expression="$ctx:RSInfoError" name="RSInfoError" xmlns:ns="http://org.apache.synapse/xsd"/>
+    </log>
+    <payloadFactory media-type="xml">
+        <format>
+            <soap:Envelope xmlns:ns="http://www.viewstar.com/webservices/2002/11" xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+                <soap:Header/>
+                <soap:Body>
+                    <ns:FaultsOnError>
+                        <ns:RSType>$1</ns:RSType>
+                        <ns:RSInfo>$2</ns:RSInfo>
+                    </ns:FaultsOnError>
+                </soap:Body>
+            </soap:Envelope>
+        </format>
+        <args>
+            <arg evaluator="xml" expression="$ctx:RSTypeError" xmlns:ns="http://org.apache.synapse/xsd"/>
+            <arg evaluator="xml" expression="$ctx:RSInfoError" xmlns:ns="http://org.apache.synapse/xsd"/>
+        </args>
+    </payloadFactory>
+    <property name="messageType" scope="axis2" type="STRING" value="application/soap+xml"/>
+    <log level="full">
+        <property name="!!!! After framing error response of Generic_Fault_SEQ !!!" value="!!!! After framing error response of Generic_Fault_SEQ !!!"/>
+    </log>
+    <respond/>
+</sequence>

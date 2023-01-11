@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/user" name="UserValidating_API" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET">
+        <inSequence>
+            <log level="custom">
+                <property name="Inserting Users" value="Data Inserting"/>
+            </log>
+            <call>
+                <endpoint key="Validation_EP"/>
+            </call>
+            <log level="custom">
+                <property expression="json-eval($)" name="After Call End Point"/>
+            </log>
+            <propertyGroup>
+                <property expression="json-eval($.Employees)" name="Employees" scope="default" type="STRING"/>
+            </propertyGroup>
+            <log level="full">
+                <property expression="$ctx:Employees" name="After Property Set"/>
+            </log>
+            <foreach expression="json-eval($.Employees)" id="OneByOne">
+                <sequence>
+                    <log level="custom">
+                        <property name="After-For-Each" value="After ForEach"/>
+                    </log>
+                    <property name="SingleUser" scope="default" type="STRING" value="json-eval($)"/>
+                    <log level="full">
+                        <property expression="json-eval($)" name="preferredFullName"/>
+                    </log>
+                </sequence>
+            </foreach>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </resource>
+</api>

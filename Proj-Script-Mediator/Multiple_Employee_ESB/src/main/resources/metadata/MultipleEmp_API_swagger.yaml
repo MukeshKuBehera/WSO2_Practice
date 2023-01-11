@@ -1,0 +1,13 @@
+openapi: 3.0.1
+info:
+  title: dummy_api
+  description: API Definition of MultipleEmp_API
+  version: 1.0.0
+servers:
+- url: http://localhost:8290/test
+paths:
+  /:
+    post:
+      responses:
+        default:
+          description: Default response

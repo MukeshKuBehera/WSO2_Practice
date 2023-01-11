@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/user" name="UserDetails_API" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET">
+        <inSequence>
+            <sequence key="CustomerDetails_SEQ"/>
+            <log level="custom">
+                <property name="After_SEQ" value="After_Seq"/>
+            </log>
+            <propertyGroup>
+                <property expression="json-eval($.users)" name="UserDetails" scope="default" type="STRING"/>
+            </propertyGroup>
+            <log>
+                <property expression="json-eval($)" name="!!! User-Details !!!"/>
+            </log>
+            <foreach expression="json-eval($.users)" id="OneByOne">
+                <sequence>
+                    <property expression="json-eval($)" name="SingleUser" scope="default" type="STRING"/>
+                    <log level="custom">
+                        <property expression="get-property('SingleUser')" name="Single_User_Log"/>
+                    </log>
+                </sequence>
+            </foreach>
+            <property expression="get-property('axis2','HTTP_SC')" name="Error_Status" scope="default" type="STRING"/>
+            <log level="custom">
+                <property expression="get-property('Error_Status')" name="Error_Status_LOG"/>
+            </log>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </resource>
+</api>

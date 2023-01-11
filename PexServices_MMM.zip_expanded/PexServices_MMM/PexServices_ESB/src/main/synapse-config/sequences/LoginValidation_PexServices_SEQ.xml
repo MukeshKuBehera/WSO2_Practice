@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="LoginValidation_PexServices_SEQ" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <log level="custom">
+        <property name="!!!! Inside LoginValidation_PexServices_SEQ !!!!!!" value="!!!! Inside LoginValidation_PexServices_SEQ !!!!!!"/>
+    </log>
+    <filter regex="false" source="boolean(get-property('username')='' or get-property('username')='null')">
+        <then/>
+        <else>
+            <log level="custom">
+                <property name="!!!!! username is null !!!!!" value="!!!!! username is null !!!!!"/>
+            </log>
+            <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+            <property name="RSInfoError" scope="default" type="STRING" value="Username must not be blank"/>
+            <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+            <sequence key="Generic_Fault_SEQ"/>
+        </else>
+    </filter>
+    <filter regex="false" source="fn:string-length(get-property('password')) &lt; 8">
+        <then/>
+        <else>
+            <log level="custom">
+                <property name="!!!! Password is too small !!!!!" value="!!!!! Password is too small !!!!!"/>
+            </log>
+            <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+            <property name="RSInfoError" scope="default" type="STRING" value="Password is too small"/>
+            <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+            <sequence key="Generic_Fault_SEQ"/>
+        </else>
+    </filter>
+    <property expression="base64Encode(get-property('password'))" name="encodedPassword" scope="default" type="STRING"/>
+    <payloadFactory media-type="json">
+        <format>{
+	"_postGetUserDetails":{
+
+"username":"$1",
+"password":"$2"
+
+}
+}
+</format>
+        <args>
+            <arg evaluator="xml" expression="get-property('username')" xmlns:ns="http://org.apache.synapse/xsd"/>
+            <arg evaluator="xml" expression="get-property('encodedPassword')" xmlns:ns="http://org.apache.synapse/xsd"/>
+        </args>
+    </payloadFactory>
+    <property name="uri.var.DSSResourceType" scope="default" type="STRING" value="GetUserDetails"/>
+    <log level="custom">
+        <property expression="json-eval($)" name="!!!! Before calling DataServicesConnection_PexServices_EP !!!!!!"/>
+    </log>
+    <call>
+        <endpoint key="conf:/Repository/Eidiko/PexServices/Endpoints/DataServicesConnection_PexServices_EP.xml"/>
+    </call>
+    <log level="custom">
+        <property expression="json-eval($)" name="!!!! After calling DataServicesConnection_PexServices_EP !!!!!!"/>
+    </log>
+    <property expression="json-eval($.Users.User.UserId)" name="UserId" scope="default" type="STRING"/>
+    <log level="custom">
+        <property expression="$ctx:UserId" name="UserId"/>
+    </log>
+    <filter regex="false" source="get-property('UserId')=''">
+        <then/>
+        <else>
+            <log level="custom">
+                <property name="Authentication Failed" value="Authentication Failed"/>
+            </log>
+            <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+            <property name="RSInfoError" scope="default" type="STRING" value="Authentication Failed"/>
+            <property name="HTTP_SC" scope="axis2" type="STRING" value="401"/>
+            <sequence key="Generic_Fault_SEQ"/>
+        </else>
+    </filter>
+</sequence>

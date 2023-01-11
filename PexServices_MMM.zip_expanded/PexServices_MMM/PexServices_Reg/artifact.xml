@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><artifacts>
+    <artifact name="DataServicesConnection_PexServices_EP" groupId="com.eidiko.resource" version="1.0.0" type="registry/resource" serverRole="EnterpriseIntegrator">
+        <item>
+            <file>DataServicesConnection_PexServices_EP.xml</file>
+            <path>/_system/config/Repository/Eidiko/PexServices/Endpoints</path>
+            <mediaType>application/vnd.wso2.esb.endpoint</mediaType>
+            <properties/>
+        </item>
+    </artifact>
+    <artifact name="CurrencyExchange_PexServices_EP" groupId="com.eidiko.resource" version="1.0.0" type="registry/resource" serverRole="EnterpriseIntegrator">
+        <item>
+            <file>CurrencyExchange_PexServices_EP.xml</file>
+            <path>/_system/config/Repository/Eidiko/PexServices/Endpoints</path>
+            <mediaType>application/vnd.wso2.esb.endpoint</mediaType>
+            <properties/>
+        </item>
+    </artifact>
+    <artifact name="PexServices_LE" groupId="com.eidiko.resource" version="1.0.0" type="registry/resource" serverRole="EnterpriseIntegrator">
+        <item>
+            <file>PexServices_LE.xml</file>
+            <path>/_system/config/Repository/Eidiko/PexServices/LocalEntry</path>
+            <mediaType>application/vnd.wso2.esb.localentry</mediaType>
+            <properties/>
+        </item>
+    </artifact>
+</artifacts>

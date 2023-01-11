@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="ValidateCardNumber_PexServices_SEQ" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <log level="custom">
+        <property name="!!!! Inside ValidateCardNumber_PexServices_SEQ !!!!!!" value="!!!! Inside ValidateCardNumber_PexServices_SEQ !!!!!!"/>
+    </log>
+    <filter regex="true" source="fn:string-length(get-property('CardNumber')) = 16">
+        <then/>
+        <else>
+            <log level="custom">
+                <property name="!!!! Invalid Card Number !!!!!" value="!!!!! Invalid Card Number !!!!!"/>
+            </log>
+            <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+            <property name="RSInfoError" scope="default" type="STRING" value="Invalid Card Number"/>
+            <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+            <sequence key="Generic_Fault_SEQ"/>
+        </else>
+    </filter>
+    <payloadFactory media-type="json">
+        <format>{
+							"_postGetCardIdFromCardNo":{
+							
+									"CardNumber" :"$1"
+									
+									}
+						}
+				</format>
+        <args>
+            <arg evaluator="xml" expression="get-property('CardNumber')" xmlns:ns="http://org.apache.synapse/xsd"/>
+        </args>
+    </payloadFactory>
+    <property name="uri.var.DSSResourceType" scope="default" type="STRING" value="GetCardIdFromCardNo"/>
+    <log level="custom">
+        <property expression="json-eval($)" name="!!!! Before calling DataServicesConnection_PexServices_EP !!!!!!"/>
+        <property expression="get-property('uri.var.DSSResourceType')" name="DSSResourceType"/>
+    </log>
+    <call>
+        <endpoint key="conf:/Repository/Eidiko/PexServices/Endpoints/DataServicesConnection_PexServices_EP.xml"/>
+    </call>
+    <property expression="json-eval($.Cards.Card.cardId)" name="CardId" scope="default" type="STRING"/>
+    <log level="custom">
+        <property expression="json-eval($)" name="!!!! After calling DataServicesConnection_PexServices_EP !!!!!!"/>
+        <property expression="get-property('CardId')" name="CardId"/>
+    </log>
+    <filter regex="false" source="get-property('CardId')=''">
+        <then/>
+        <else>
+            <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+            <property name="RSInfoError" scope="default" type="STRING" value="Dear customer, You entered incorrect card details. Please try again with correct card details"/>
+            <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+            <sequence key="Generic_Fault_SEQ"/>
+        </else>
+    </filter>
+</sequence>

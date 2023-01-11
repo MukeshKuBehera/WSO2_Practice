@@ -1,0 +1,18 @@
+map_S_root_S_root = function(){ 
+var outputroot={};
+
+outputroot =  {};
+outputroot.Dr_Details =  {};
+outputroot.Dr_Details.name = inputroot.name;
+outputroot.Dr_Details.hospital = inputroot.hospital;
+outputroot.Dr_Details.category = inputroot.category;
+outputroot.availability = inputroot.availability;
+outputroot.fee = inputroot.fee;
+return outputroot;
+};
+
+
+
+
+
+

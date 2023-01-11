@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/emp" name="EmployeeAPI" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET" uri-template="/{id}">
+        <inSequence>
+            <log description="Log" level="custom">
+                <property name="message" value="Wel Come to the Employee"/>
+            </log>
+            <send>
+                <endpoint key="EmployeeEndpoint"/>
+            </send>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </resource>
+</api>

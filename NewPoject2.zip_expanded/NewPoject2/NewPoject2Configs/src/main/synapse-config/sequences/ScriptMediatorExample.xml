@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="ScriptMediatorExample" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <property name="rootElement" scope="default">
+        <jsonObject xmlns=""/>
+    </property>
+    <iterate continueParent="true" expression="//ARR_ITEM" xmlns:ns="http://org.apache.synapse/xsd">
+        <target>
+            <sequence>
+                <log level="custom">
+                    <property name="iterator" value="in the iterate"/>
+                </log>
+                <payloadFactory media-type="json">
+                    <format>
+                $1
+            </format>
+                    <args>
+                        <arg evaluator="json" expression="$"/>
+                    </args>
+                </payloadFactory>
+                <script language="js"><![CDATA[mc.setProperty('CONTENT_TYPE', 'application/json');
+                var log =mc.getServiceLog();
+               var payLoad = mc.getPayloadJSON();
+               var catalogItem = payLoad.ARR_ITEM;
+               log.info("result" + catalogItem);
+               catalogItem.CT.CT_ITEM.ED = "456"; 
+               catalogItem.DISCRIPTIONS = "This is the modified description";                
+               mc.setPayloadJSON(payLoad);]]></script>
+                <log level="full"/>
+                <aggregate>
+                    <completeCondition>
+                        <messageCount max="-1" min="-1"/>
+                    </completeCondition>
+                    <onComplete aggregateElementType="root" enclosingElementProperty="rootElement" expression="//jsonObject/ARR_ITEM">
+                        <log level="full">
+                            <property name="MSG" value="Aggregated Msg"/>
+                        </log>
+                        <respond/>
+                    </onComplete>
+                </aggregate>
+            </sequence>
+        </target>
+    </iterate>
+</sequence>

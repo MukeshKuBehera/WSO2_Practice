@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/script" name="Script-API" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="POST">
+        <inSequence>
+            <log description="INSERTING DATA" level="full"/>
+            <propertyGroup description="Employee-Data">
+                <property expression="json-eval($.id)" name="id" scope="default" type="INTEGER"/>
+                <property expression="json-eval($.name)" name="name" scope="default" type="STRING"/>
+                <property expression="json-eval($.desg)" name="desg" scope="default" type="STRING"/>
+                <property expression="json-eval($.salary)" name="salary" scope="default" type="STRING"/>
+                <property expression="json-eval($.Rest-salary)" name="Rest-salar" scope="default" type="STRING"/>
+            </propertyGroup>
+            <script language="js"><![CDATA[var amount=mc.getProperty("salary");
+            var netsalary=parseFloat(amount);
+            print("netsalary:"+netsalary);
+            if(netsalary>=10000){
+            var tax=0.25;
+            var taxamount=netsalary*tax;
+           amount=netsalary - taxamount;
+           print("after tax paid:"+amount);
+           var taxdeducted=netsalary-amount;
+           print("tax amount :"+taxdeducted);
+           }
+            mc.setProperty("amount",amount.toString());
+            mc.setProperty("taxdeducted",taxdeducted.toString());]]></script>
+            <property expression="get-property('amount')" name="Rest-salary" scope="default" type="STRING"/>
+            <property expression="get-property('taxdeducted')" name="Tax-Amount" scope="default" type="STRING"/>
+            <log level="custom">
+                <property expression="get-property('amount')" name="Rest-salary"/>
+                <!--  <property expression="json-eval($)" name="Rest-salary"/> -->
+            </log>
+            <log level="custom">
+                <property expression="get-property('taxdeducted')" name="Tax-Amount"/>
+            </log>
+            <payloadFactory media-type="json">
+                <format>{
+                "id":"$1",
+                "name":"$2",
+                "desg":"$3",
+                "total-amount":"$4",
+                "tax-deducted":"$5",
+                "rest-amount":"$6"}</format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:id"/>
+                    <arg evaluator="xml" expression="$ctx:name"/>
+                    <arg evaluator="xml" expression="$ctx:desg"/>
+                    <arg evaluator="xml" expression="$ctx:salary"/>
+                    <arg evaluator="xml" expression="$ctx:Tax-Amount"/>
+                    <arg evaluator="xml" expression="$ctx:Rest-salary"/>
+                </args>
+            </payloadFactory>
+            <!-- <log description="After Payload" level="full">
+                <property expression="json-eval($)" name="EmployeeDetails"/>
+            </log> -->
+            <respond/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </resource>
+</api>

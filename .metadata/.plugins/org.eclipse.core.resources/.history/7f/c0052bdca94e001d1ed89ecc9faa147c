@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy name="CardRegistration_PexServices_Proxy" startOnLoad="true" transports="http https" xmlns="http://ws.apache.org/ns/synapse">
+    <target>
+        <inSequence>
+            <log level="custom">
+                <property name="!!!! Inside CardRegistration_PexServices_Proxy !!!!!!" value="!!!! Inside CardRegistration_PexServices_Proxy !!!!!!"/>
+            </log>
+            <propertyGroup>
+                <property expression="//username/text()" name="username" scope="default" type="STRING"/>
+                <property expression="//password/text()" name="password" scope="default" type="STRING"/>
+                <property expression="//CardNumber//text()" name="CardNumber" scope="default" type="STRING"/>
+                <property expression="//card_type//text()" name="card_type" scope="default" type="STRING"/>
+                <property expression="//fname/text()" name="fname" scope="default" type="STRING"/>
+                <property expression="//initial/text()" name="initial" scope="default" type="STRING"/>
+                <property expression="//title//text()" name="title" scope="default" type="STRING"/>
+                <property expression="//lname//text()" name="lname" scope="default" type="STRING"/>
+                <property expression="//dob/text()" name="dob" scope="default" type="STRING"/>
+                <property expression="//gender/text()" name="gender" scope="default" type="STRING"/>
+                <property expression="//IDNumber//text()" name="IDNumber" scope="default" type="STRING"/>
+                <property expression="//passport_expiry//text()" name="passport_expiry" scope="default" type="STRING"/>
+                <property expression="//passport_file/text()" name="passport_file" scope="default" type="STRING"/>
+                <property expression="//nationality/text()" name="nationality" scope="default" type="STRING"/>
+                <property expression="//add1//text()" name="add1" scope="default" type="STRING"/>
+                <property expression="//add2//text()" name="add2" scope="default" type="STRING"/>
+                <property expression="//add3/text()" name="add3" scope="default" type="STRING"/>
+                <property expression="//add4/text()" name="add4" scope="default" type="STRING"/>
+                <property expression="//country//text()" name="country" scope="default" type="STRING"/>
+                <property expression="//postal/text()" name="postal" scope="default" type="STRING"/>
+                <property expression="//mob/text()" name="mob" scope="default" type="STRING"/>
+                <property expression="//email//text()" name="email" scope="default" type="STRING"/>
+                <property expression="//source_of_funds//text()" name="source_of_funds" scope="default" type="STRING"/>
+            </propertyGroup>
+            <sequence key="LoginValidation_PexServices_SEQ"/>
+            <payloadFactory media-type="json">
+                <format>{
+							"_postGetCardIdFromCardNo":{
+							
+									"CardNumber" :"$1"
+									
+									}
+						}
+				</format>
+                <args>
+                    <arg evaluator="xml" expression="get-property('CardNumber')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                </args>
+            </payloadFactory>
+            <property name="uri.var.DSSResourceType" scope="default" type="STRING" value="GetCardIdFromCardNo"/>
+            <log level="custom">
+                <property expression="json-eval($)" name="!!!! Before calling DataServicesConnection_PexServices_EP !!!!!!"/>
+                <property expression="get-property('uri.var.DSSResourceType')" name="DSSResourceType"/>
+            </log>
+            <call>
+                <endpoint key="conf:/Repository/Eidiko/PexServices/Endpoints/DataServicesConnection_PexServices_EP.xml"/>
+            </call>
+            <property expression="json-eval($.Cards.Card.cardId)" name="CardId" scope="default" type="STRING"/>
+            <log level="custom">
+                <property expression="json-eval($)" name="!!!! After calling DataServicesConnection_PexServices_EP !!!!!!"/>
+                <property expression="get-property('CardId')" name="CardId"/>
+            </log>
+            <filter regex="true" source="get-property('CardId')=''">
+                <then>
+                    <log level="custom">
+                        <property name="!!!!! As the card number is not  registred yet so continue to register the card !!!!" value="!!!!! As the card number is not  registred yet.So continue to register the card !!!!"/>
+                    </log>
+                </then>
+                <else>
+                    <log level="custom">
+                        <property name="!!!!! Card number is  already registred !!!!" value="!!!!! Card number is already register !!!!!"/>
+                    </log>
+                    <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+                    <property name="RSInfoError" scope="default" type="STRING" value="Card number is already register"/>
+                    <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+                    <sequence key="Generic_Fault_SEQ"/>
+                </else>
+            </filter>
+            <sequence key="CardRegRequestValidation_SEQ"/>
+            <payloadFactory media-type="json">
+                <format>{
+							"_postSaveCardHolderInfo":{
+									"fname" :"$1",
+									"initial" :"$2",
+									"title" :"$3",
+									"lname" :"$4",
+									"dob" :"$5",
+									"gender" :"$6",
+									"IDNumber" :"$7",
+									"passport_expiry" :"$8",
+									"passport_file" :"$9",
+									"nationality" :"$10",
+									"add1" :"$11",
+									"add2" :"$12",
+									"add3" :"$13",
+									"add4" :"$14",
+									"country" :"$15",
+									"postal" :"$16",
+									"mob" :"$17",
+									"email" :"$18",
+									"source_of_funds" :"$19",
+									"UserId" :$20
+									
+									}
+						}
+				</format>
+                <args>
+                    <arg evaluator="xml" expression="get-property('fname')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('initial')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('title')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('lname')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('dob')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('gender')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('IDNumber')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('passport_expiry')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('passport_file')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('nationality')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('add1')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('add2')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('add3')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('add4')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('country')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('postal')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('mob')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('email')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('source_of_funds')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('UserId')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                </args>
+            </payloadFactory>
+            <property name="uri.var.DSSResourceType" scope="default" type="STRING" value="SaveCardHolderInfo"/>
+            <log level="custom">
+                <property expression="json-eval($)" name="!!!! Before calling DataServicesConnection_PexServices_EP !!!!!!"/>
+                <property expression="get-property('uri.var.DSSResourceType')" name="DSSResourceType"/>
+            </log>
+            <call>
+                <endpoint key="conf:/Repository/Eidiko/PexServices/Endpoints/DataServicesConnection_PexServices_EP.xml"/>
+            </call>
+            <property expression="json-eval($.CardHolders.CardHolder[0].CardHolderId)" name="CardHolderId" scope="default" type="STRING"/>
+            <log level="custom">
+                <property expression="json-eval($)" name="!!!! After calling DataServicesConnection_PexServices_EP !!!!!!"/>
+                <property expression="get-property('CardHolderId')" name="CardHolderId"/>
+            </log>
+            <payloadFactory media-type="json">
+                <format>{
+							"_postSaveCardDetails":{
+									"UserId":$1,
+									"CardNumber" :"$2",
+									"card_type" :"$3",
+									"CardHolderId":$4
+									}
+						}
+				</format>
+                <args>
+                    <arg evaluator="xml" expression="get-property('UserId')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('CardNumber')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('card_type')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('CardHolderId')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                </args>
+            </payloadFactory>
+            <property name="uri.var.DSSResourceType" scope="default" type="STRING" value="SaveCardDetails"/>
+            <log level="custom">
+                <property expression="json-eval($)" name="!!!! Before calling DataServicesConnection_PexServices_EP !!!!!!"/>
+                <property expression="get-property('uri.var.DSSResourceType')" name="DSSResourceType"/>
+            </log>
+            <call>
+                <endpoint key="conf:/Repository/Eidiko/PexServices/Endpoints/DataServicesConnection_PexServices_EP.xml"/>
+            </call>
+            <property expression="json-eval($.cards.card[0].cardId)" name="CardId" scope="default" type="STRING"/>
+            <log level="custom">
+                <property expression="json-eval($)" name="!!!! After calling DataServicesConnection_PexServices_EP !!!!!!"/>
+                <property expression="get-property('CardId')" name="CardId"/>
+            </log>
+            <payloadFactory media-type="json">
+                <format>{
+							"_postUpdateAccountTable":{
+									"UserId":$1,
+									"cardId" :$2
+								
+									}
+						}
+				</format>
+                <args>
+                    <arg evaluator="xml" expression="get-property('UserId')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                    <arg evaluator="xml" expression="get-property('CardId')" xmlns:ns="http://org.apache.synapse/xsd"/>
+                </args>
+            </payloadFactory>
+            <property name="uri.var.DSSResourceType" scope="default" type="STRING" value="UpdateAccountTable"/>
+            <log level="custom">
+                <property expression="json-eval($)" name="!!!! Before calling DataServicesConnection_PexServices_EP !!!!!!"/>
+                <property expression="get-property('uri.var.DSSResourceType')" name="DSSResourceType"/>
+            </log>
+            <call>
+                <endpoint key="conf:/Repository/Eidiko/PexServices/Endpoints/DataServicesConnection_PexServices_EP.xml"/>
+            </call>
+            <filter regex="false" source="get-property('CardId')=''">
+                <then>
+                    <payloadFactory description="Generate XML payload." media-type="xml">
+                        <format>
+                            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+                                <soapenv:Body>
+                                    <ns:CardRegistrationRes xmlns:ns="http://ProxyPractice.services.core.carbon.wso2.org">
+                                        <ns:RSType>$1</ns:RSType>
+                                        <ns:RSInfo>Card $2 registered successfully</ns:RSInfo>
+                                    </ns:CardRegistrationRes>
+                                </soapenv:Body>
+                            </soapenv:Envelope>
+                        </format>
+                        <args>
+                            <arg value="SUCCESS"/>
+                            <arg evaluator="xml" expression="get-property('CardNumber')" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"/>
+                        </args>
+                    </payloadFactory>
+                </then>
+                <else>
+                    <property name="RSTypeError" scope="default" type="STRING" value="FAIL"/>
+                    <property name="RSInfoError" scope="default" type="STRING" value="Card registration failed"/>
+                    <property name="HTTP_SC" scope="axis2" type="STRING" value="500"/>
+                    <sequence key="Generic_Fault_SEQ"/>
+                </else>
+            </filter>
+            <property name="messageType" scope="axis2" type="STRING" value="application/soap+xml"/>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </target>
+</proxy>

@@ -1,0 +1,3 @@
+<api xmlns="http://ws.apache.org/ns/synapse" context="/csv-to-xml" name="CSV_XML_API">
+<resource methods="GET"><inSequence/><outSequence/><faultSequence/></resource>
+</api>

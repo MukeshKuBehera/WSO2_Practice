@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><resources>
+    <item>
+        <file>DataServicesConnection_PexServices_EP.xml</file>
+        <path>/_system/config/Repository/Eidiko/PexServices/Endpoints</path>
+        <mediaType>application/vnd.wso2.esb.endpoint</mediaType>
+        <properties/>
+    </item>
+</resources>

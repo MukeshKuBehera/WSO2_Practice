@@ -1,0 +1,325 @@
+<data name="PexServices_DSS" serviceNamespace="" serviceGroup="" transports="http https">
+    <description/>
+        <config id="PEXDatasource">
+        <property name="org.wso2.ws.dataservice.user">root</property>
+        <property name="org.wso2.ws.dataservice.password">Regadmin@123</property>
+        <property name="org.wso2.ws.dataservice.protocol">jdbc:mysql://192.168.3.103:3306/pex_db</property>
+        <property name="org.wso2.ws.dataservice.driver">com.mysql.jdbc.Driver</property>
+    </config>
+    
+    
+    <query id="GetUserDetailsQuery" useConfig="PEXDatasource">
+        <sql>select UserId from pex_db.user_table where username=:username and password=:password </sql>
+        <param name="username" paramType="SCALAR" sqlType="STRING"/>
+        <param name="password" paramType="SCALAR" sqlType="STRING"/>
+
+        
+<result outputType="json">{
+		    "Users": {
+		        "User": 
+		            {
+		                "UserId": "$UserId"
+		            }
+		        
+		    }
+		}
+	</result>    </query>
+     <operation name="GetUserDetails">
+        <call-query href="GetUserDetailsQuery">
+            <with-param name="username" query-param="username"/>
+            <with-param name="password" query-param="password"/>
+        </call-query>
+    </operation>
+    
+     <query id="GetBalanceQuery" useConfig="PEXDatasource">
+        <sql>SELECT account_table.AccBalance
+FROM account_table 
+INNER JOIN card_table ON account_table.cardId=card_table.cardId  and card_table.Card_No=:CardNumber</sql>
+        <param name="CardNumber" paramType="SCALAR" sqlType="STRING"/>
+
+        
+<result outputType="json">{
+		    "AccountDetails": {
+		        "AccountDetail": 
+		            {
+		                "AccBalance": "$AccBalance"
+		            }
+		        
+		    }
+		}
+	</result>    </query>
+     <operation name="GetBalance">
+        <call-query href="GetBalanceQuery">
+            <with-param name="CardNumber" query-param="CardNumber"/>
+
+        </call-query>
+    </operation>
+    
+    
+       <query id="SaveCardHolderInfoQuery" useConfig="PEXDatasource"  keyColumns="CardHolderId" returnGeneratedKeys="true">
+        <sql>INSERT INTO card_holder_details
+			(fname,
+			initial,title,
+			lname,dob,gender,IDNumber,passport_expiry,
+			passport_file,nationality,add1,add2,add3,
+			add4,country,postal,mob,
+			email,source_of_funds,UserId)
+			values
+			(:fname,:initial,:title,
+			:lname,:dob,:gender,:IDNumber,:passport_expiry,:passport_file,
+			:nationality,:add1,:add2,:add3,:add4,
+			:country,:postal,:mob,:email,:source_of_funds,:UserId)</sql>
+			<result element="CardHolders" rowName="CardHolder" useColumnNumbers="true">
+         <element column="1" name="CardHolderId" xsdType="string"/>
+      </result>
+        <param name="fname" paramType="SCALAR" sqlType="STRING"/>
+        <param name="initial" paramType="SCALAR" sqlType="STRING"/>
+        <param name="title" paramType="SCALAR" sqlType="STRING"/>
+        <param name="lname" paramType="SCALAR" sqlType="STRING"/>
+        <param name="dob" paramType="SCALAR" sqlType="STRING"/>
+        <param name="gender" paramType="SCALAR" sqlType="STRING"/>
+        <param name="IDNumber" paramType="SCALAR" sqlType="STRING"/>
+        <param name="passport_expiry" paramType="SCALAR" sqlType="STRING"/>
+        <param name="passport_file" paramType="SCALAR" sqlType="STRING"/>
+		     <param name="nationality" paramType="SCALAR" sqlType="STRING"/>
+			   <param name="add1" paramType="SCALAR" sqlType="STRING"/>
+        <param name="add2" paramType="SCALAR" sqlType="STRING"/>
+        <param name="add3" paramType="SCALAR" sqlType="STRING"/>
+		     <param name="add4" paramType="SCALAR" sqlType="STRING"/>
+        <param name="country" paramType="SCALAR" sqlType="STRING"/>
+        <param name="postal" paramType="SCALAR" sqlType="STRING"/>
+        <param name="mob" paramType="SCALAR" sqlType="STRING"/>
+		 <param name="email" paramType="SCALAR" sqlType="STRING"/>
+        <param name="source_of_funds" paramType="SCALAR" sqlType="STRING"/>
+          <param name="UserId" paramType="SCALAR" sqlType="INTEGER"/>
+  </query>
+  
+     <operation name="SaveCardHolderInfo">
+        <call-query href="SaveCardHolderInfoQuery">
+            <with-param name="fname" query-param="fname"/>
+            <with-param name="initial" query-param="initial"/>
+            <with-param name="title" query-param="title"/>
+            <with-param name="lname" query-param="lname"/>
+            <with-param name="dob" query-param="dob"/>
+            <with-param name="gender" query-param="gender"/>
+            <with-param name="IDNumber" query-param="IDNumber"/>
+            <with-param name="passport_expiry" query-param="passport_expiry"/>
+            <with-param name="passport_file" query-param="passport_file"/>
+			 <with-param name="nationality" query-param="nationality"/>
+			  <with-param name="add1" query-param="add1"/>
+            <with-param name="add2" query-param="add2"/>
+            <with-param name="add3" query-param="add3"/>
+			 <with-param name="add4" query-param="add4"/>
+            <with-param name="country" query-param="country"/>
+            <with-param name="postal" query-param="postal"/>
+            <with-param name="mob" query-param="mob"/>
+		     <with-param name="email" query-param="email"/>
+            <with-param name="source_of_funds" query-param="source_of_funds"/>
+             <with-param name="UserId" query-param="UserId"/>
+        </call-query>
+    </operation>
+    
+    
+     <query id="SaveCardDetailsQuery" useConfig="PEXDatasource"  keyColumns="cardId" returnGeneratedKeys="true">
+        <sql>INSERT INTO card_table
+			(UserId,Card_No
+			,Card_Type,CardHolderId)
+			values
+			(:UserId,:CardNumber,:card_type,:CardHolderId)</sql>
+			<result element="cards" rowName="card" useColumnNumbers="true">
+         <element column="1" name="cardId" xsdType="string"/>
+      </result>
+        <param name="UserId"  sqlType="INTEGER"/>
+        <param name="CardNumber" paramType="SCALAR" sqlType="STRING"/>
+        <param name="card_type" paramType="SCALAR" sqlType="STRING"/>
+        <param name="CardHolderId" sqlType="INTEGER"/>
+  </query>
+     <operation name="SaveCardDetails">
+        <call-query href="SaveCardDetailsQuery">
+            <with-param name="UserId" query-param="UserId"/>
+            <with-param name="CardNumber" query-param="CardNumber"/>
+            <with-param name="card_type" query-param="card_type"/>
+            <with-param name="CardHolderId" query-param="CardHolderId"/>
+        </call-query>
+    </operation>
+      <query id="UpdateAccountTableQuery" useConfig="PEXDatasource">
+        <sql>UPDATE account_table SET cardId =:cardId WHERE UserId=:UserId</sql>
+        <param name="cardId" paramType="SCALAR" sqlType="INTEGER"/>
+        <param name="UserId" paramType="SCALAR" sqlType="INTEGER"/>
+    </query>
+       <operation name="UpdateAccountTable">
+        <call-query href="UpdateAccountTableQuery">
+            <with-param name="cardId" query-param="cardId"/>
+            <with-param name="UserId" query-param="UserId"/>
+        </call-query>
+    </operation>
+    
+     <query id="GetCardIdFromCardNoQuery" useConfig="PEXDatasource">
+        <sql>select cardId from card_table where Card_No=:CardNumber</sql>
+<param name="CardNumber" paramType="SCALAR" sqlType="STRING"/>
+
+        
+<result outputType="json">{
+		    "Cards": {
+		        "Card": 
+		            {
+		                "cardId": "$cardId"
+		            }
+		        
+		    }
+		}
+	</result>    </query>
+     <operation name="GetCardIdFromCardNo">
+        <call-query href="GetCardIdFromCardNoQuery">
+            <with-param name="CardNumber" query-param="CardNumber"/>
+        </call-query>
+    </operation>
+    
+ <query id="UpdCardForApprvlQuery" useConfig="PEXDatasource"  >
+        <sql>UPDATE card_table SET PIN=:PIN, CardExpiry=:CardExpiry,CardCvvNo=:CardCvvNo,isActive=1,Notes=:Notes,CardApprvdDate=:CardApprvdDate  WHERE Card_No=:CardNumber</sql>
+       		<param name="CardNumber" paramType="SCALAR" sqlType="STRING"/>
+        <param name="PIN" paramType="SCALAR" sqlType="STRING"/>
+		  <param name="CardExpiry" paramType="SCALAR" sqlType="STRING"/>
+        <param name="CardCvvNo" paramType="SCALAR" sqlType="STRING"/>
+        <param name="Notes" paramType="SCALAR" sqlType="STRING"/>
+        <param name="CardApprvdDate" paramType="SCALAR" sqlType="STRING"/></query>
+       <operation name="UpdCardForApprvl">
+        <call-query href="UpdCardForApprvlQuery">
+            <with-param name="CardNumber" query-param="CardNumber"/>
+            <with-param name="PIN" query-param="PIN"/>
+             <with-param name="CardExpiry" query-param="CardExpiry"/>
+            <with-param name="CardCvvNo" query-param="CardCvvNo"/>
+             <with-param name="Notes" query-param="Notes"/>
+            <with-param name="CardApprvdDate" query-param="CardApprvdDate"/>
+        </call-query>
+    </operation>
+    
+      <query id="GetCardStatusQuery" useConfig="PEXDatasource">
+        <sql>select isActive from card_table where Card_No=:CardNumber </sql>
+        <param name="CardNumber" paramType="SCALAR" sqlType="STRING"/>
+        
+<result outputType="json">{
+		    "CardStatus": {
+		        "Status": 
+		            {
+		                "isActive": "$isActive"
+		            }
+		        
+		    }
+		}
+	</result>   
+	 </query>
+     <operation name="GetCardStatus">
+        <call-query href="GetCardStatusQuery">
+            <with-param name="CardNumber" query-param="CardNumber"/>
+        </call-query>
+    </operation>
+    
+    
+    <query id="UpdatePin" useConfig="PEXDatasource">
+<sql>UPDATE card_table SET
+PIN=:PIN
+WHERE Card_No = :Card_No
+</sql>
+<param name="PIN" paramType="SCALAR" sqlType="STRING" />
+<param name="Card_No" paramType="SCALAR" sqlType="STRING" />
+</query>
+<operation name="PinChange">
+<call-query href="UpdatePin">
+<with-param name="PIN" query-param="PIN" />
+<with-param name="Card_No" query-param="Card_No" />
+</call-query>
+
+</operation>
+
+<query id="GetCardDetailsQuery" useConfig="PEXDatasource">
+        <sql>SELECT Card_No,CardExpiry FROM pex_db.card_table WHERE Card_Type=:Card_Type and UserId=:UserId </sql>
+        <param name="Card_Type" paramType="SCALAR" sqlType="STRING"/>
+        <param name="UserId" paramType="SCALAR" sqlType="INTEGER"/>    
+<result outputType="json">{
+		    "cards": {
+		        "card": 
+		            {
+		                "cardNum": "$Card_No",
+						"Expiry": "$CardExpiry"
+		            }
+		        
+		    }
+		}
+	</result>    </query>
+     <operation name="GetCardDetails">
+        <call-query href="GetCardDetailsQuery">
+            <with-param name="Card_Type" query-param="Card_Type"/>	
+            <with-param name="UserId" query-param="UserId"/>
+        </call-query>
+    </operation>
+    <!-- <query id="SaveUserDetailsQuery" useConfig="PEXDatasource"  keyColumns="UserId" returnGeneratedKeys="true">
+        <sql>INSERT INTO user_table
+			(username,password
+			,fname,
+			initial,title,
+			lname,dob,gender,IDNumber,passport_expiry,
+			passport_file,nationality,add1,add2,add3,
+			add4,country,postal,mob,
+			email,source_of_funds)
+			values
+			(:username,:password,:fname,:initial,:title,
+			:lname,:dob,:gender,:IDNumber,:passport_expiry,:passport_file,
+			:nationality,:add1,:add2,:add3,:add4,
+			:country,:postal,:mob,:email,:source_of_funds)</sql>
+			<result element="Users" rowName="User" useColumnNumbers="true">
+         <element column="1" name="UserId" xsdType="string"/>
+      </result>
+        <param name="username" paramType="SCALAR" sqlType="STRING"/>
+        <param name="password" paramType="SCALAR" sqlType="STRING"/>
+        <param name="fname" paramType="SCALAR" sqlType="STRING"/>
+        <param name="initial" paramType="SCALAR" sqlType="STRING"/>
+        <param name="title" paramType="SCALAR" sqlType="STRING"/>
+        <param name="lname" paramType="SCALAR" sqlType="STRING"/>
+        <param name="dob" paramType="SCALAR" sqlType="STRING"/>
+        <param name="gender" paramType="SCALAR" sqlType="STRING"/>
+        <param name="IDNumber" paramType="SCALAR" sqlType="STRING"/>
+        <param name="passport_expiry" paramType="SCALAR" sqlType="STRING"/>
+        <param name="passport_file" paramType="SCALAR" sqlType="STRING"/>
+		     <param name="nationality" paramType="SCALAR" sqlType="STRING"/>
+			   <param name="add1" paramType="SCALAR" sqlType="STRING"/>
+        <param name="add2" paramType="SCALAR" sqlType="STRING"/>
+        <param name="add3" paramType="SCALAR" sqlType="STRING"/>
+		     <param name="add4" paramType="SCALAR" sqlType="STRING"/>
+        <param name="country" paramType="SCALAR" sqlType="STRING"/>
+        <param name="postal" paramType="SCALAR" sqlType="STRING"/>
+        <param name="mob" paramType="SCALAR" sqlType="STRING"/>
+		 <param name="email" paramType="SCALAR" sqlType="STRING"/>
+        <param name="source_of_funds" paramType="SCALAR" sqlType="STRING"/>
+  </query>
+  
+     <operation name="SaveUserDetails">
+        <call-query href="SaveUserDetailsQuery">
+            <with-param name="username" query-param="username"/>
+            <with-param name="password" query-param="password"/>
+            <with-param name="fname" query-param="fname"/>
+            <with-param name="initial" query-param="initial"/>
+            <with-param name="title" query-param="title"/>
+            <with-param name="lname" query-param="lname"/>
+            <with-param name="dob" query-param="dob"/>
+            <with-param name="gender" query-param="gender"/>
+            <with-param name="IDNumber" query-param="IDNumber"/>
+            <with-param name="passport_expiry" query-param="passport_expiry"/>
+            <with-param name="passport_file" query-param="passport_file"/>
+			 <with-param name="nationality" query-param="nationality"/>
+			  <with-param name="add1" query-param="add1"/>
+            <with-param name="add2" query-param="add2"/>
+            <with-param name="add3" query-param="add3"/>
+			 <with-param name="add4" query-param="add4"/>
+            <with-param name="country" query-param="country"/>
+            <with-param name="postal" query-param="postal"/>
+            <with-param name="mob" query-param="mob"/>
+		     <with-param name="email" query-param="email"/>
+            <with-param name="source_of_funds" query-param="source_of_funds"/>
+        </call-query>
+    </operation>
+    
+     -->
+
+    
+</data>

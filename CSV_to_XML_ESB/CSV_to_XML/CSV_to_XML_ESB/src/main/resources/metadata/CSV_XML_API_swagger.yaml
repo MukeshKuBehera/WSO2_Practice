@@ -1,0 +1,13 @@
+openapi: 3.0.1
+info:
+  title: CSV_XML_API
+  description: API Definition of CSV_XML_API
+  version: 1.0.0
+servers:
+- url: http://localhost:8290/csv-to-xml
+paths:
+  /:
+    post:
+      responses:
+        default:
+          description: Default response

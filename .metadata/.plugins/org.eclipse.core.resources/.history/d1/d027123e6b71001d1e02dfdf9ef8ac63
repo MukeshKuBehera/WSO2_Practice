@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/csv-to-xml" name="CSV_XML_API" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET">
+        <inSequence>
+            <CSV.csvToXml>
+                <headerPresent>Absent</headerPresent>
+                <skipHeader>true</skipHeader>
+                <tagNames>id,name,dept,fee</tagNames>
+                <rootElementTag>results</rootElementTag>
+                <groupElementTag>result</groupElementTag>
+            </CSV.csvToXml>
+            <log level="full">
+                <property expression="get-property('body')" name="csv_data"/>
+            </log>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </resource>
+</api>
